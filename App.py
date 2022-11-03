@@ -37,7 +37,6 @@ st.write(
 	    """
 )
 
-option = st.sidebar.selectbox(text="",some_list,index=0)
 
 c1, c2, c3 = st.columns([1, 4, 1])
 
@@ -53,7 +52,7 @@ with c2:
                     """
         )
 
-        submit_button = st.form_submit_button(label="Transcribe")
+        submit_button = st.form_submit_button(label="Transcribe",label_visibility='collapse')
 
 if f is not None:
     st.audio(f, format="wav")
