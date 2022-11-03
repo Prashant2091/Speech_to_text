@@ -37,7 +37,7 @@ st.write(
 	    """
 )
 
-st.text("")
+option = st.sidebar.selectbox(text="",some_list,index=0)
 
 c1, c2, c3 = st.columns([1, 4, 1])
 
