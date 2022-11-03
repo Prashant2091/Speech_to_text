@@ -19,15 +19,13 @@ st.set_page_config(page_title="Speech to Text Transcription App", page_icon="ðŸ‘
 
 # logo and header -------------------------------------------------
 
-st.text("")
+st.text(" ")
 st.image(
     "https://emojipedia-us.s3.amazonaws.com/source/skype/289/parrot_1f99c.png",
     width=125,
 )
 
 st.title("Speech to text transcription app")
-st.write("DB username:", st.secrets["db_username"])
-st.write("DB password:", st.secrets["db_password"])
 st.write(
     "Has environment variables been set:",
     os.environ["db_username"] == st.secrets["db_username"],
