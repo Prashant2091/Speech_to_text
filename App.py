@@ -2,7 +2,6 @@
 """
 Created on Thu Nov  3 11:01:22 2022
 
-@author: Satyam
 """
 
 import streamlit as st
