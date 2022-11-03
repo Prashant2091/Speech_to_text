@@ -52,7 +52,7 @@ with c2:
                     """
         )
 
-        submit_button = st.form_submit_button(label="Transcribe", disabled=False)
+        submit_button = st.form_submit_button(label="Transcribe")
 
 if f is not None:
     st.audio(f, format="wav")
