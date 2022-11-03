@@ -73,7 +73,7 @@ if f is not None:
         bytes_data = f.getvalue()
 
         # Load your API key from an environment variable or secret management service
-        api_token = st.secrets["db_password"]
+        api_token = st.secrets["P1234"]
 
         # endregion API key
         headers = {"Authorization": f"Bearer {api_token}"}
