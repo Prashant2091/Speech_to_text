@@ -76,7 +76,7 @@ if f is not None:
         api_token = st.secrets["db_password"]
 
         # endregion API key
-        headers = {"Authorization": f"Bearer {db_password}"}
+        headers = {"Authorization": f"Bearer {api_token}"}
         API_URL = (
             "https://api-inference.huggingface.co/models/facebook/wav2vec2-base-960h"
         )
