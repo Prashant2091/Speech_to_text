@@ -73,10 +73,10 @@ if f is not None:
         bytes_data = f.getvalue()
 
         # Load your API key from an environment variable or secret management service
-        api_token = st.secrets["abcdef"]
+        api_token = st.secrets["db_password"]
 
         # endregion API key
-        headers = {"Authorization": f"Bearer {api_token}"}
+        headers = {"Authorization": f"Bearer {db_password}"}
         API_URL = (
             "https://api-inference.huggingface.co/models/facebook/wav2vec2-base-960h"
         )
