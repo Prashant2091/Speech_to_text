@@ -19,7 +19,7 @@ st.set_page_config(page_title="Speech to Text Transcription App", page_icon="ðŸ‘
 
 # logo and header -------------------------------------------------
 
-st.text(" ")
+st.text("Project")
 st.image(
     "https://emojipedia-us.s3.amazonaws.com/source/skype/289/parrot_1f99c.png",
     width=125,
