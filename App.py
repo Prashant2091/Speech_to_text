@@ -26,7 +26,12 @@ st.image(
 )
 
 st.title("Speech to text transcription app")
-
+st.write("DB username:", st.secrets["db_username"])
+st.write("DB password:", st.secrets["db_password"])
+st.write(
+    "Has environment variables been set:",
+    os.environ["db_username"] == st.secrets["db_username"],
+)
 st.write(
     """  
 -   Upload a wav file, transcribe it, then export it to a text file!
