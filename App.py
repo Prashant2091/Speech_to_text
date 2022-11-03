@@ -45,7 +45,7 @@ c1, c2, c3 = st.columns([1, 4, 1])
 
 with c2:
 
-    with st.form(key="1234"):
+    with st.form(key="my_form"):
 
         f = st.file_uploader("", type=[".wav"])
 
