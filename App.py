@@ -52,7 +52,7 @@ with c2:
                     """
         )
 
-        submit_button = st.form_submit_button(label="Transcribe",label_visibility='collapse')
+        submit_button = st.form_submit_button(label="Transcribe,help=None, on_click=None, args=None, kwargs=None, *, type="secondary", disabled=False)
 
 if f is not None:
     st.audio(f, format="wav")
