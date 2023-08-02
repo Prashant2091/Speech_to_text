@@ -1,4 +1,5 @@
-streamlit
-sounddevice
-numpy
-scipy
+streamlit==0.90.0
+sounddevice==0.4.1
+numpy==1.19.5
+scipy==1.7.3
+speechrecognition==3.8.1
