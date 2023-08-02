@@ -1,2 +1,2 @@
-streamlit
-SpeechRecognition==3.8.1
+streamlit==0.86.0
+pyaudio==0.2.11
