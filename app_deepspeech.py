@@ -1,16 +1,24 @@
 import streamlit as st
+import sounddevice as sd
+import numpy as np
 import speech_recognition as sr
 
-def speech_to_text(language="en-US"):
-    r = sr.Recognizer()
+def record_audio(duration=5, sample_rate=44100):
+    st.write("Recording...")
+    audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1)
+    sd.wait()
+    return audio_data
 
-    with sr.Microphone() as source:
-        st.write("Speak now...")
-        audio = r.listen(source)
+def speech_to_text(language="en-US"):
+    audio_data = record_audio()
+    audio_data = np.squeeze(audio_data)
+    audio_bytes = audio_data.tobytes()
+
+    r = sr.Recognizer()
 
     try:
         st.write("Transcription:")
-        text = r.recognize_google(audio, language=language)
+        text = r.recognize_google(audio_bytes, language=language)
         st.write(text)
     except sr.UnknownValueError:
         st.error("Sorry, could not understand audio.")
