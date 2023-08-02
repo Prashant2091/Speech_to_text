@@ -1,4 +1,2 @@
 streamlit>=0.85.0
-sounddevice==0.4.1
-numpy==1.19.5
-speechrecognition==3.8.1
+
