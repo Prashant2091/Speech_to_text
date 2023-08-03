@@ -1,4 +1,4 @@
-streamlit
-speechrecognition
-translate
-sounddevice
+streamlit==0.92.1
+speechrecognition==3.8.1
+translate==3.6.1
+sounddevice==0.4.1
