@@ -1,5 +1,6 @@
 import streamlit as st
 import speech_recognition as sr
+from audio_recorder_streamlit import audio_recorder
 
 def speech_to_text(language="en"):
     r = sr.Recognizer()
@@ -25,7 +26,10 @@ def record_audio():
     audio_data = None
     with st.spinner("Recording..."):
         try:
-            audio_data = st.audio("", format="audio/wav")
+            audio_bytes = audio_recorder()
+             if audio_bytes:
+              #st.audio(audio_bytes, format="audio/wav")
+              audio_data = st.audio(audio_bytes, format="audio/wav")
         except Exception as e:
             st.error(f"Error during audio recording: {e}")
 
