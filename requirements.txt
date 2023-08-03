@@ -1,3 +1,2 @@
-streamlit==0.87.0
-webrtcvad==2.0.10
-streamlit_audio_recorder==0.1.0
+streamlit==0.92.1
+speechrecognition==3.8.1
