@@ -1,29 +1,32 @@
 import streamlit as st
 import speech_recognition as sr
-from pydub import AudioSegment
+import streamlit.components.v1 as components
 
 def speech_to_text(language="en"):
     r = sr.Recognizer()
 
-    # Record audio using Streamlit's microphone widget
-    st.write("Recording...")
-    audio_data = st.record("record_button")
+    st.write("Click the 'Start Recording' button and speak.")
+    
+    if st.button("Start Recording"):
+        audio_data = record_audio()
+        if audio_data:
+            try:
+                st.write("Transcription:")
+                text = r.recognize_google(audio_data, language=language)
+                st.write(text)
 
-    # Convert audio_data to a format compatible with speech_recognition
-    audio_data = AudioSegment.from_file(io.BytesIO(audio_data.getvalue()), format="wav")
+            except sr.UnknownValueError:
+                st.error("Sorry, could not understand audio.")
+            except sr.RequestError as e:
+                st.error(f"Error fetching results from Google Speech Recognition service: {e}")
+            except Exception as e:
+                st.error(f"Error: {e}")
 
-    # Recognize speech using the audio data
-    try:
-        st.write("Transcription:")
-        text = r.recognize_google(audio_data, language=language)
-        st.write(text)
-
-    except sr.UnknownValueError:
-        st.error("Sorry, could not understand audio.")
-    except sr.RequestError as e:
-        st.error(f"Error fetching results from Google Speech Recognition service: {e}")
-    except Exception as e:
-        st.error(f"Error: {e}")
+def record_audio():
+    audio_data = components.audio_recorder()
+    if audio_data:
+        audio_bytes = audio_data["data"].get("audio/wav")
+        return audio_bytes
 
 def main():
     st.title("Speech-to-Text Converter")
@@ -40,9 +43,7 @@ def main():
 
     language = st.selectbox("Select Language", list(language_options.keys()))
 
-    if st.button("Start Recording"):
-        language_code = language_options[language]
-        speech_to_text(language_code)
+    speech_to_text(language_options[language])
 
 if __name__ == "__main__":
     main()
