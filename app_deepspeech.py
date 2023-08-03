@@ -1,13 +1,14 @@
 import streamlit as st
 import speech_recognition as sr
 from googletrans import Translator
+import webrtcvad
 
 def speech_to_text(language="en"):
     r = sr.Recognizer()
 
-    with sr.Microphone() as source:
+    with sr.AudioFile("audio.wav") as source:
         st.write("Speak now...")
-        audio = r.listen(source)
+        audio = r.record(source)
 
     try:
         st.write("Transcription:")
@@ -44,6 +45,18 @@ def main():
 
     if st.button("Start Recording"):
         language_code = language_options[language]
+        with st.spinner("Recording..."):
+            vad = webrtcvad.Vad()
+            vad.set_mode(1)
+
+            mic = sr.Microphone()
+            with mic as source:
+                audio_data = r.adjust_for_ambient_noise(source)
+                audio = r.listen(source)
+
+            with open("audio.wav", "wb") as f:
+                f.write(audio.get_wav_data())
+
         speech_to_text(language_code)
 
 if __name__ == "__main__":
