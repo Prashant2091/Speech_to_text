@@ -1,3 +1,4 @@
 streamlit==0.92.1
-speechrecognition==3.8.1
-pyaudio==0.2.11
+SpeechRecognition==3.8.1
+google-cloud-speech==2.7.0
+google-cloud-translate==4.5.0
