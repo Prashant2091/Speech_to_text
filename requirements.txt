@@ -1,4 +1,4 @@
 streamlit
 speechrecognition
-googletrans
+translate
 sounddevice
