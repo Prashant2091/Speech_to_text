@@ -1,15 +1,17 @@
 import streamlit as st
 import tempfile
 import os
-import sounddevice as sd
 import numpy as np
 import webrtcvad
 import speech_recognition as sr
+import pyaudio
 
-def audio_callback(indata, frames, time, status):
-    temp_buffer.append(indata.copy())
+def audio_callback(in_data, frame_count, time_info, status):
+    global temp_buffer
+    temp_buffer.append(in_data)
     if len(temp_buffer) > num_segments:
         vad_detection()
+    return (None, pyaudio.paContinue)
 
 def vad_detection():
     global temp_buffer
@@ -84,9 +86,15 @@ def main():
         temp_buffer = []
         num_segments = 5  # Number of segments to split the audio for VAD
         sample_rate = 44100  # Adjust this based on your microphone's sample rate
-        with sd.InputStream(callback=audio_callback, channels=1, samplerate=sample_rate):
-            st.write("Speak now... (Press the 'Stop Recording' button to finish)")
-            st.button("Stop Recording")
+        
+        p = pyaudio.PyAudio()
+        stream = p.open(format=pyaudio.paInt16, channels=1, rate=sample_rate, input=True, stream_callback=audio_callback)
+        
+        st.write("Speak now... (Press the 'Stop Recording' button to finish)")
+        st.button("Stop Recording")
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
 
 if __name__ == "__main__":
     main()
