@@ -27,10 +27,10 @@ def record_audio():
     with st.spinner("Recording..."):
         try:
             audio_bytes = audio_recorder()
-             if audio_bytes:
-               #st.audio(audio_bytes, format="audio/wav")
-               audio_data = st.audio(audio_bytes, format="audio/wav")
-         except Exception as e:
+            if audio_bytes:
+                # st.audio(audio_bytes, format="audio/wav")
+                audio_data = st.audio(audio_bytes, format="audio/wav")
+        except Exception as e:
             st.error(f"Error during audio recording: {e}")
 
     return audio_data
