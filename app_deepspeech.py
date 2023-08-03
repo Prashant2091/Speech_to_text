@@ -1,53 +1,33 @@
 import streamlit as st
 import speech_recognition as sr
-import soundfile as sf
-import tempfile
-import os
-
-def save_audio(audio_data, filename):
-    with open(filename, "wb") as f:
-        f.write(audio_data.get_wav_data())
+from pydub import AudioSegment
 
 def speech_to_text(language="en"):
     r = sr.Recognizer()
 
-    st.write("Please record your speech using the voice recorder below.")
+    # Record audio using Streamlit's microphone widget
+    st.write("Recording...")
+    audio_data = st.record("record_button")
 
-    # Add a record button to start recording audio
-    record_button = st.button("Start Recording")
+    # Convert audio_data to a format compatible with speech_recognition
+    audio_data = AudioSegment.from_file(io.BytesIO(audio_data.getvalue()), format="wav")
 
-    if record_button:
-        # Create a temporary file to store the recorded audio
-        temp_file = tempfile.NamedTemporaryFile(delete=False)
-        temp_filename = temp_file.name
+    # Recognize speech using the audio data
+    try:
+        st.write("Transcription:")
+        text = r.recognize_google(audio_data, language=language)
+        st.write(text)
 
-        # Record audio
-        with st.audio(recording=True, format="audio/wav") as audio_data:
-            st.write("Recording...")
-
-        # Save recorded audio to a temporary file
-        save_audio(audio_data, temp_filename)
-
-        # Read the audio file and perform speech recognition
-        with sr.AudioFile(temp_filename) as audio:
-            try:
-                text = r.recognize_google(audio, language=language)
-                st.write("Transcription:")
-                st.write(text)
-
-            except sr.UnknownValueError:
-                st.error("Sorry, could not understand audio.")
-            except sr.RequestError as e:
-                st.error(f"Error fetching results from Google Speech Recognition service: {e}")
-            except Exception as e:
-                st.error(f"Error: {e}")
-
-        # Remove the temporary audio file
-        os.remove(temp_filename)
+    except sr.UnknownValueError:
+        st.error("Sorry, could not understand audio.")
+    except sr.RequestError as e:
+        st.error(f"Error fetching results from Google Speech Recognition service: {e}")
+    except Exception as e:
+        st.error(f"Error: {e}")
 
 def main():
     st.title("Speech-to-Text Converter")
-    st.write("Select the language and record your speech using the voice recorder below.")
+    st.write("Select the language and start speaking.")
 
     language_options = {
         "English": "en",
@@ -59,9 +39,10 @@ def main():
     }
 
     language = st.selectbox("Select Language", list(language_options.keys()))
-    language_code = language_options[language]
 
-    speech_to_text(language_code)
+    if st.button("Start Recording"):
+        language_code = language_options[language]
+        speech_to_text(language_code)
 
 if __name__ == "__main__":
     main()
