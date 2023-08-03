@@ -1,37 +1,28 @@
 import streamlit as st
-import tempfile
-import os
-import numpy as np
 import speech_recognition as sr
-import pyaudio
+from google.cloud import translate_v2 as translate
+from st_voice_recorder import voice_recorder
 
-def audio_callback(in_data, frame_count, time_info, status):
-    global temp_buffer
-    temp_buffer.append(in_data)
-    if len(temp_buffer) > num_segments:
-        save_and_transcribe_audio()
-    return (None, pyaudio.paContinue)
-
-def save_and_transcribe_audio():
-    global temp_buffer
-    frames = np.concatenate(temp_buffer)
-    temp_buffer = []
-    
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as fp:
-        temp_wav_file = fp.name
-        fp.write(frames.tobytes())
-    
-    speech_to_text(temp_wav_file)
-
-def speech_to_text(wav_file):
+def speech_to_text(language="en"):
     r = sr.Recognizer()
-    with sr.AudioFile(wav_file) as source:
-        audio = r.record(source)
-    
+
+    st.write("Please record your speech using the voice recorder below.")
+
+    # Get audio recording from the voice recorder component
+    audio_data = voice_recorder()
+
     try:
-        text = r.recognize_google(audio, language=language)
+        # Perform speech recognition
+        audio_text = sr.AudioData(audio_data)
+        text = r.recognize_google(audio_text, language=language)
         st.write("Transcription:")
         st.write(text)
+
+        # Language translation
+        translate_client = translate.Client()
+        translated_text = translate_client.translate(text, target_language="en")
+        st.write("Translation (English):")
+        st.write(translated_text["translatedText"])
 
     except sr.UnknownValueError:
         st.error("Sorry, could not understand audio.")
@@ -41,9 +32,8 @@ def speech_to_text(wav_file):
         st.error(f"Error: {e}")
 
 def main():
-    global temp_buffer, num_segments, sample_rate, language
     st.title("Speech-to-Text Converter")
-    st.write("Select the language and start speaking.")
+    st.write("Select the language and record your speech using the voice recorder below.")
 
     language_options = {
         "English": "en",
@@ -55,20 +45,9 @@ def main():
     }
 
     language = st.selectbox("Select Language", list(language_options.keys()))
+    language_code = language_options[language]
 
-    if st.button("Start Recording"):
-        temp_buffer = []
-        num_segments = 5  # Number of segments to split the audio for VAD
-        sample_rate = 44100  # Adjust this based on your microphone's sample rate
-        
-        p = pyaudio.PyAudio()
-        stream = p.open(format=pyaudio.paInt16, channels=1, rate=sample_rate, input=True, stream_callback=audio_callback)
-        
-        st.write("Speak now... (Press the 'Stop Recording' button to finish)")
-        st.button("Stop Recording")
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
+    speech_to_text(language_code)
 
 if __name__ == "__main__":
     main()
