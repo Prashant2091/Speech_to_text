@@ -2,7 +2,6 @@ import streamlit as st
 import tempfile
 import os
 import numpy as np
-import webrtcvad
 import speech_recognition as sr
 import pyaudio
 
@@ -10,44 +9,19 @@ def audio_callback(in_data, frame_count, time_info, status):
     global temp_buffer
     temp_buffer.append(in_data)
     if len(temp_buffer) > num_segments:
-        vad_detection()
+        save_and_transcribe_audio()
     return (None, pyaudio.paContinue)
 
-def vad_detection():
+def save_and_transcribe_audio():
     global temp_buffer
     frames = np.concatenate(temp_buffer)
     temp_buffer = []
     
-    vad = webrtcvad.Vad()
-    vad.set_mode(2)
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as fp:
+        temp_wav_file = fp.name
+        fp.write(frames.tobytes())
     
-    frames_bytes = frames.tobytes()
-    segments = vad_collector(vad, frames_bytes, sample_rate)
-    
-    for i, segment in enumerate(segments):
-        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as fp:
-            temp_wav_file = fp.name
-            fp.write(segment)
-        speech_to_text(temp_wav_file)
-
-def vad_collector(vad, frames_bytes, sample_rate):
-    frames = frames_bytes
-    frames_len = len(frames)
-    frame_duration_ms = int(1000 * 10 / sample_rate)
-    frame_duration = int(sample_rate * frame_duration_ms / 1000)
-    in_speech = False
-    offset = 0
-    segments = []
-    while offset < frames_len:
-        frame = frames[offset:offset + frame_duration]
-        if vad.is_speech(frame, sample_rate):
-            segments.append(frame)
-            in_speech = True
-        elif in_speech:
-            segments.append(frame)
-            in_speech = False
-        offset += frame_duration
-    return [np.array(seg, dtype=np.int16) for seg in segments]
+    speech_to_text(temp_wav_file)
 
 def speech_to_text(wav_file):
     r = sr.Recognizer()
