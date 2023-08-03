@@ -1,6 +1,6 @@
 import streamlit as st
 import speech_recognition as sr
-from googletrans import Translator
+from translate import Translator
 
 def speech_to_text(language="en"):
     r = sr.Recognizer()
@@ -15,10 +15,10 @@ def speech_to_text(language="en"):
         st.write(text)
 
         # Language translation
-        translator = Translator()
-        translated_text = translator.translate(text, src=language, dest="en")
+        translator = Translator(to_lang="en")
+        translated_text = translator.translate(text)
         st.write("Translation (English):")
-        st.write(translated_text.text)
+        st.write(translated_text)
 
     except sr.UnknownValueError:
         st.error("Sorry, could not understand audio.")
