@@ -1,12 +1,11 @@
 import streamlit as st
 import speech_recognition as sr
-import streamlit.components.v1 as components
 
 def speech_to_text(language="en"):
     r = sr.Recognizer()
 
     st.write("Click the 'Start Recording' button and speak.")
-    
+
     if st.button("Start Recording"):
         audio_data = record_audio()
         if audio_data:
@@ -23,10 +22,14 @@ def speech_to_text(language="en"):
                 st.error(f"Error: {e}")
 
 def record_audio():
-    audio_data = components.audio_recorder()
-    if audio_data:
-        audio_bytes = audio_data["data"].get("audio/wav")
-        return audio_bytes
+    audio_data = None
+    with st.spinner("Recording..."):
+        try:
+            audio_data = st.audio("", format="audio/wav")
+        except Exception as e:
+            st.error(f"Error during audio recording: {e}")
+
+    return audio_data
 
 def main():
     st.title("Speech-to-Text Converter")
