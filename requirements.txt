@@ -1,4 +1,2 @@
 streamlit==0.92.1
-googletrans==4.0.0-rc1
-SpeechRecognition==3.8.1
-numpy==1.19.5
+speechrecognition==3.8.1
