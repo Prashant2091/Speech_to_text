@@ -1,13 +1,35 @@
 import streamlit as st
 import speech_recognition as sr
 from googletrans import Translator
-import webrtcvad
+import sounddevice as sd
+import numpy as np
+
+def record_audio():
+    fs = 44100  # Sample rate
+    seconds = 5  # Duration of recording
+
+    st.write("Speak now...")
+
+    # Record audio
+    audio = sd.rec(int(seconds * fs), samplerate=fs, channels=2)
+    sd.wait()
+
+    # Save audio as a WAV file
+    file_path = "audio.wav"
+    wav_data = np.int16(audio * 32767)  # Convert audio to 16-bit integers
+    with open(file_path, "wb") as f:
+        f.write(wav_data.tobytes())
+
+    st.write("Recording saved.")
+
+    return file_path
 
 def speech_to_text(language="en"):
     r = sr.Recognizer()
 
-    with sr.AudioFile("audio.wav") as source:
-        st.write("Speak now...")
+    file_path = record_audio()
+
+    with sr.AudioFile(file_path) as source:
         audio = r.record(source)
 
     try:
@@ -45,18 +67,6 @@ def main():
 
     if st.button("Start Recording"):
         language_code = language_options[language]
-        with st.spinner("Recording..."):
-            vad = webrtcvad.Vad()
-            vad.set_mode(1)
-
-            mic = sr.Microphone()
-            with mic as source:
-                audio_data = r.adjust_for_ambient_noise(source)
-                audio = r.listen(source)
-
-            with open("audio.wav", "wb") as f:
-                f.write(audio.get_wav_data())
-
         speech_to_text(language_code)
 
 if __name__ == "__main__":
