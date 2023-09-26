@@ -1,12 +1,13 @@
 import streamlit as st
+import sounddevice as sd
 import speech_recognition as sr
 
 def speech_to_text(language):
     r = sr.Recognizer()
 
-    with sr.Microphone() as source:
-        st.write("Speak something...")
-        audio = r.listen(source)
+    st.write("Speak something...")
+    audio = sd.rec(int(5 * 44100), channels=1)
+    sd.wait()
 
     try:
         text = r.recognize_google(audio, language=language)
@@ -19,7 +20,7 @@ def speech_to_text(language):
 def main():
     st.title("Speech to Text Converter")
 
-    language = st.selectbox("Select Language", ["English", "Spanish"])  # Add more options as needed
+    language = st.selectbox("Select Language", ["en-US", "es-ES"])  # Add more options as needed
 
     if st.button("Convert"):
         text = speech_to_text(language)
