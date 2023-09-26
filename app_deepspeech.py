@@ -1,5 +1,7 @@
 import streamlit as st
 import speech_recognition as sr
+from pydub import AudioSegment
+import tempfile
 
 # Set page title and format
 st.set_page_config(page_title="Speech to Text Converter", layout="wide")
@@ -19,11 +21,17 @@ def main():
     st.write("Upload an audio file and choose the language to convert speech to text!")
 
     # Audio file upload
-    uploaded_file = st.file_uploader("Choose an audio file", type=["wav", "mp3"])
+    uploaded_file = st.file_uploader("Choose an audio file", type=["mp3"])
 
     if uploaded_file:
         st.write("File uploaded successfully!")
 
+        # Convert MP3 to WAV
+        audio = AudioSegment.from_file(uploaded_file, format="mp3")
+        wav_file = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+        wav_file.close()
+        audio.export(wav_file.name, format="wav")
+        
         # Language selection
         language = st.selectbox("Select the language", ["English", "Spanish", "French"])
         language_code = "en-US"  # Default to English (United States)
@@ -35,7 +43,7 @@ def main():
             language_code = "fr-FR"
 
         # Convert speech to text
-        text = convert_speech_to_text(uploaded_file, language=language_code)
+        text = convert_speech_to_text(wav_file.name, language=language_code)
 
         # Display converted text
         st.subheader("Converted Text")
@@ -49,7 +57,7 @@ def main():
 
     # Footer
     st.markdown("---")
-    st.write("Created with ❤️ by Your Name")
+    st.write("Created with ❤️ by Prashant")
 
 # Run the app
 if __name__ == "__main__":
