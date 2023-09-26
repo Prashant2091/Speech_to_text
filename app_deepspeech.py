@@ -1,11 +1,12 @@
 import streamlit as st
+import sounddevice as sd
 import speech_recognition as sr
 
 def speech_to_text(language):
     r = sr.Recognizer()
-    with sr.Microphone() as source:
+    with sd.capture(samplerate=16000, channels=1) as mic:
         st.write("Speak now...")
-        audio = r.listen(source)
+        audio = mic.record(duration=5)
     try:
         text = r.recognize_google(audio, language=language)
         st.success("Text: {}".format(text))
