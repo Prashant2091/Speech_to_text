@@ -1,3 +1,2 @@
-streamlit==0.92.1
-speechrecognition==3.8.1
-audio-recorder-streamlit===0.0.8
+streamlit==0.87.0
+SpeechRecognition==3.8.1
