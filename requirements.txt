@@ -1,3 +1,4 @@
 streamlit==0.89.0
 sounddevice==0.4.1
 SpeechRecognition==3.8.1
+click>=7.0,<8.0
